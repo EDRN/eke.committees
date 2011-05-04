@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+Copyright 2010 California Institute of Technology. ALL RIGHTS
+RESERVED. U.S. Government Sponsorship acknowledged.
+-->
+<metadata>
+    <version>0</version>
+    <dependencies>
+        <dependency>profile-eke.site:default</dependency>
+    </dependencies>
+</metadata>

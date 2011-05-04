@@ -1,0 +1,60 @@
+<html xmlns='http://www.w3.org/1999/xhtml'
+    xml:lang='en'
+    lang='en'
+    xmlns:tal='http://xml.zope.org/namespaces/tal'
+    xmlns:metal='http://xml.zope.org/namespaces/metal'
+    xmlns:i18n='http://xml.zope.org/namespaces/i18n'
+    metal:use-macro='context/main_template/macros/master'
+    i18n:domain='eke.committees'>
+    <head>
+        <title>Committee Folder</title>
+    </head>
+    <body>
+        <metal:main fill-slot='main'>
+            <tal:main-macro metal:define-macro='main'>
+                <div tal:replace='structure provider:plone.abovecontenttitle' />
+                <h1 class='documentFirstHeading'> 
+                    <metal:field use-macro='python:context.widget("title", mode="view")'>
+                        Title
+                    </metal:field>
+                </h1>
+                <div tal:replace='structure provider:plone.belowcontenttitle' />
+                <p class='documentDescription'>
+                    <metal:field use-macro='python:context.widget("description", mode="view")'>Description.</metal:field>
+                </p>
+                <div tal:replace='structure provider:plone.abovecontentbody' />
+                <div metal:use-macro='context/@@standardRDFAttribute/macros/rdfDataSource'>Standard RDF</div>
+                <div tal:condition='view/haveSubfolders' tal:omit-tag=''>
+                    <h3 i18n:translate='committeesFolder_subfolders'>Subfolders in this Folder</h3>
+                    <ul>
+                       <li tal:repeat='subfolder view/subfolders'>
+                            <a href='#' title='Scintilating sub-folders exposed!' tal:content='subfolder/title'
+                                tal:attributes='href subfolder/url; title subfolder/description'>
+                                Sub-Committees Action Folder
+                            </a>
+                       </li> 
+                    </ul>
+                </div>
+
+                <h2 i18n:translate='knowledgeFolder_inThisFolder'>Contents</h2>
+                <p tal:condition='not:view/haveCommittees' i18n:translate='committeesFolder_noCommittees' class='discreet'>
+                    There are currently no committees in this folder.
+                </p>
+                <div tal:repeat='committeeGroups view/committees'>
+                    <h3 tal:content='committeeGroups/title'>Tiger Teams</h3>
+                    <ul tal:define='committees committeeGroups/committees'>
+                        <li tal:repeat='committee committees'>
+                            <a href='#' tal:attributes='href committee/url' tal:content='committee/title'>
+                                Meow
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div metal:use-macro='context/document_relateditems/macros/relatedItems'>
+                    Any related items
+                </div>
+                <div tal:replace='structure provider:plone.belowcontentbody' />
+            </tal:main-macro>
+        </metal:main>
+    </body>
+</html>

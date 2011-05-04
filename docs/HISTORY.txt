@@ -1,0 +1,22 @@
+Changelog
+=========
+
+What follows is a history of changes from release to release.  For more
+details about specific issue IDs listed below, consult the issue tracker at
+https://oodt.jpl.nasa.gov/jira/browse/CA.
+
+
+1.0.0 - Plone 4
+---------------
+
+This release makes eke.committees compatible with Plone 4.
+
+
+0.0.0 - Unreleased
+------------------
+
+Initial release into beta.  Creation of this project was spurred on by these
+issues:
+
+* CA-591 - Broken links on Committees pages
+* CA-718 - Replace manually maintained committee information with RDF ingest
