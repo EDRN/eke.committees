@@ -22,34 +22,21 @@ Tests
 
 In order to execute these tests, we'll first need a test browser::
 
-    >>> from Products.Five.testbrowser import Browser
-    >>> browser = Browser()
-    >>> portalURL = self.portal.absolute_url()
-        
-We also change some settings so that any errors will be reported immediately::
-
+    >>> app = layer['app']
+    >>> from plone.testing.z2 import Browser
+    >>> from plone.app.testing import SITE_OWNER_NAME, SITE_OWNER_PASSWORD
+    >>> browser = Browser(app)
     >>> browser.handleErrors = False
-    >>> self.portal.error_log._ignored_exceptions = ()
-        
-We'll also turn off the portlets.  Why?  Well for these tests we'll be looking
-for specific strings output in the HTML, and the portlets will often have
-duplicate links that could interfere with that::
+    >>> browser.addHeader('Authorization', 'Basic %s:%s' % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD))
+    >>> portal = layer['portal']    
+    >>> portalURL = portal.absolute_url()
 
-    >>> from zope.component import getUtility, getMultiAdapter
-    >>> from plone.portlets.interfaces import IPortletManager, IPortletAssignmentMapping
-    >>> for colName in ('left', 'right'):
-    ...     col = getUtility(IPortletManager, name=u'plone.%scolumn' % colName)
-    ...     assignable = getMultiAdapter((self.portal, col), IPortletAssignmentMapping)
-    ...     for name in assignable.keys():
-    ...             del assignable[name]
+We'll also have a second browser that's unprivileged for some later
+demonstrations::
 
-And finally we'll log in as an administrator::
+    >>> unprivilegedBrowser = Browser(app)
 
-    >>> from Products.PloneTestCase.setup import portal_owner, default_password
-    >>> browser.open(portalURL + '/login_form?came_from=' + portalURL)
-    >>> browser.getControl(name='__ac_name').value = portal_owner
-    >>> browser.getControl(name='__ac_password').value = default_password
-    >>> browser.getControl(name='submit').click()
+Let's go!
 
 
 Addable Content
@@ -228,7 +215,17 @@ And the ordering?  Take a look::
 
     >>> browser.open(portalURL + '/senate-committees')
     >>> browser.contents
-    '...Collaborative Groups...Progress...Committees...Subcommittees...Disaster...Teams...Tiger......Working Groups...Bipartisan...'
+    '...Committees...Subcommittees...Disaster...Teams...Tiger......Working Groups...Bipartisan...'
+
+Collaborative Groups are a kind of committee according to the DMCC.  However,
+we don't want them to actually appear in the committee folder listing, because
+they're … "special".  The "Progress Limiting" committee was a collaborative
+group, but notice how it didn't appear in the listing::
+
+    >>> 'Progress Limiting' in browser.contents
+    False
+    >>> 'Collaborative Groups' in browser.contents
+    False
 
 Additionally, any nested Committees Folders should appear above the list of
 committees::
@@ -240,7 +237,7 @@ committees::
     >>> browser.getControl(name='form.button.save').click()
     >>> browser.open(portalURL + '/senate-committees')
     >>> browser.contents
-    '...Special Subsection...Collaborative Groups...Committees...Subcommittees...Teams...Working Groups...'
+    '...Special Subsection...Committees...Subcommittees...Teams...Working Groups...'
 
 
 RDF Ingestion
@@ -305,14 +302,8 @@ RDF Data Sources
 ~~~~~~~~~~~~~~~~
 
 The URL to an RDF data source is nominally displayed on a Committee folder,
-but only if you're an administrator.  Let's log in as an administrator::
-
-    >>> browser.open(portalURL + '/login_form?came_from=' + portalURL)
-    >>> browser.getControl(name='__ac_name').value = portal_owner
-    >>> browser.getControl(name='__ac_password').value = default_password
-    >>> browser.getControl(name='submit').click()
-
-And look, there's the RDF URL::
+but only if you're an administrator, which our test browser is logged in as.
+See, there's the RDF URL::
 
     >>> browser.open(portalURL + '/house-committees')
     >>> browser.contents
@@ -320,9 +311,8 @@ And look, there's the RDF URL::
 
 However, mere mortals shouldn't see that::
 
-    >>> browser.open(portalURL + '/logout')
-    >>> browser.open(portalURL + '/house-committees')
-    >>> 'RDF Data Source' not in browser.contents
+    >>> unprivilegedBrowser.open(portalURL + '/house-committees')
+    >>> 'RDF Data Source' not in unprivilegedBrowser.contents
     True
 
 That's it!

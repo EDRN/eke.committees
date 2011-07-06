@@ -28,6 +28,7 @@ class CommitteeFolderView(KnowledgeFolderView):
         byType = {}
         for b in results:
             if not b.committeeType: continue
+            if b.committeeType == 'Collaborative Group': continue # They're … "special".
             committeeType = b.committeeType + u's' # FIXME: Cheesy non-i18n pluralization
             if committeeType not in byType: byType[committeeType] = []
             committees = byType[committeeType]

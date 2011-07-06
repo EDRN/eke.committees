@@ -21,6 +21,9 @@ _namespaces  = ['eke']
 _entryPoints = {}
 _zipSafe     = False
 _keywords    = 'web zope plone edrn cancer committees'
+_extras = {
+    'test': ['plone.app.testing'],
+}
 _externalRequirements = [
     'setuptools',
     'Plone',
@@ -60,6 +63,7 @@ setup(
     classifiers=_classifiers,
     description=_description,
     download_url=_downloadURL,
+    extras_require=_extras,
     entry_points=_entryPoints,
     include_package_data=True,
     install_requires=_reqs,
