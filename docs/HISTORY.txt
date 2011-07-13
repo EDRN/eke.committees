@@ -6,8 +6,8 @@ details about specific issue IDs listed below, consult the issue tracker at
 https://oodt.jpl.nasa.gov/jira/browse/CA.
 
 
-1.0.2 - TBD
------------
+1.0.2 - Let's Collaborate!
+--------------------------
 
 * Re-attaches members of committees of type "Collaborative Group" to any
   name-matching "Collaborative Group" objects (from edrnsite.collaborations) in
