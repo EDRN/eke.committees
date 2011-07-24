@@ -26,11 +26,13 @@ class CommitteeFolderIngestor(KnowledgeFolderIngestor):
         catalog = getToolByName(aq_inner(self.context), 'portal_catalog')
         for committee in [i.obj for i in self.objects if i.obj.committeeType == 'Collaborative Group']:
             for collabGroup in [i.getObject() for i in catalog(object_provides=_collabGroup, Title=committee.title)]:
+                if len(committee.chair) > 0:
+                    collabGroup.setChair(committee.chair[0])
+                if len(committee.coChair) > 0:
+                    collabGroup.setCoChair(committee.coChair[0])
                 members = []
                 members.extend(committee.member)
                 members.extend(committee.consultant)
-                members.extend(committee.coChair)
-                members.extend(committee.chair)
                 collabGroup.setMembers(members)
 
 class CommitteeHandler(IngestHandler):

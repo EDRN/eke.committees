@@ -6,6 +6,15 @@ details about specific issue IDs listed below, consult the issue tracker at
 https://oodt.jpl.nasa.gov/jira/browse/CA.
 
 
+1.0.3 - TBD
+-----------
+
+This release:
+
+* Updates the chair and co-chair of collaborative groups as committees are
+  ingested from RDF.
+
+
 1.0.2 - Let's Collaborate!
 --------------------------
 
