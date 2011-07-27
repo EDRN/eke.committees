@@ -133,16 +133,20 @@ Now we can create our own committee::
     'Alottaspank, Dirk'
     >>> len(c.coChair)
     2
-    >>> c.coChair[0].title, c.coChair[1].title
-    ('Cusexijilomimi, Crystal Hotstuff', 'Pawaka, Makin')
+    >>> coChairs = [i.title for i in c.coChair]
+    >>> coChairs.sort()
+    >>> coChairs
+    ['Cusexijilomimi, Crystal Hotstuff', 'Pawaka, Makin']
     >>> len(c.consultant)
     1
     >>> c.consultant[0].title
     'Pawaka, Makin'
     >>> len(c.member)
     3
-    >>> c.member[0].title, c.member[1].title, c.member[2].title
-    ('Alottaspank, Dirk', 'Cusexijilomimi, Crystal Hotstuff', 'Pawaka, Makin')
+    >>> members = [i.title for i in c.member]
+    >>> members.sort()
+    >>> members
+    ['Alottaspank, Dirk', 'Cusexijilomimi, Crystal Hotstuff', 'Pawaka, Makin']
 
 
 Committee View
