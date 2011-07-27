@@ -10,7 +10,7 @@ import os.path
 # ------------
 
 _name        = 'eke.committees'
-_version     = '1.0.4'
+_version     = '1.0.5'
 _description = 'EDRN Committee list and membership information for the EDRN Knowledge Environment'
 _url         = 'http://cancer.jpl.nasa.gov/products/eke-committees'
 _downloadURL = 'http://oodt.jpl.nasa.gov/dist/eke'
