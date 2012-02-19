@@ -6,6 +6,14 @@ details about specific issue IDs listed below, consult the issue tracker at
 https://oodt.jpl.nasa.gov/jira/browse/CA.
 
 
+1.0.5 — TBD
+-----------
+
+This release includes:
+
+* Depending on just Plone the framework instead of Plone the application.
+
+
 1.0.4 — Increases Resilience Rating by 30 for 60 minutes
 --------------------------------------------------------
 
