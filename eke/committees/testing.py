@@ -70,6 +70,8 @@ class _TestingMailHost(object):
         self._sentMessages = []
     def getSentMessages(self):
         return self._sentMessages
+    def getId(self):
+        return 'MailHost'
 
 class EKECommittees(PloneSandboxLayer):
     defaultBases = (EKE_SITE_FIXTURE, EKE_KNOWLEDGE_FIXTURE)
