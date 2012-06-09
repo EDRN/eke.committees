@@ -27,6 +27,7 @@ _extras = {
 _externalRequirements = [
     'setuptools',
     'Products.CMFPlone',
+    'zope.globalrequest',
 ]
 _classifiers = [
     'Development Status :: 4 - Beta',
