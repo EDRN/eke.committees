@@ -12,6 +12,7 @@ from eke.knowledge.browser.views import KnowledgeFolderView, KnowledgeObjectView
 from plone.memoize.instance import memoize
 from Products.CMFCore.utils import getToolByName
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from edrnsite.collaborations.interfaces import IGroupSpace
 
 class CommitteeFolderView(KnowledgeFolderView):
     '''Default view of a Committee Folder.'''
@@ -24,21 +25,12 @@ class CommitteeFolderView(KnowledgeFolderView):
     def committees(self):
         context = aq_inner(self.context)
         catalog = getToolByName(context, 'portal_catalog')
-        results = catalog(object_provides=ICommittee.__identifier__, path=dict(query='/'.join(context.getPhysicalPath()), depth=1))
-        byType = {}
-        for b in results:
-            if not b.committeeType: continue
-            if b.committeeType == 'Collaborative Group': continue # They're … "special".
-            committeeType = b.committeeType + u's' # FIXME: Cheesy non-i18n pluralization
-            if committeeType not in byType: byType[committeeType] = []
-            committees = byType[committeeType]
-            committees.append(dict(title=b.Title, url=b.getURL()))
-        results = []
-        for committeeType, committees in byType.items():
-            committees.sort(lambda a, b: cmp(a['title'], b['title']))
-            results.append(dict(title=committeeType, committees=committees))
-        results.sort(lambda a, b: cmp(a['title'], b['title']))
-        return results
+        results = catalog(
+            object_provides=(ICommittee.__identifier__, IGroupSpace.__identifier__),
+            path=dict(query='/'.join(context.getPhysicalPath()), depth=1),
+            sort_on='sortable_title'
+        )
+        return [dict(title=i.Title, url=i.getURL()) for i in results]
     @memoize
     def subfolders(self):
         context = aq_inner(self.context)

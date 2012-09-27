@@ -28,6 +28,7 @@ _externalRequirements = [
     'setuptools',
     'Products.CMFPlone',
     'zope.globalrequest',
+    'edrnsite.collaborations',
 ]
 _classifiers = [
     'Development Status :: 4 - Beta',

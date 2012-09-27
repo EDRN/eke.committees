@@ -13,7 +13,11 @@ from eke.site.interfaces import IPerson
 
 class ICommitteeFolder(IKnowledgeFolder):
     '''Committee folder.'''
-    contains('eke.committees.interfaces.ICommittee', 'eke.committees.interfaces.ICommitteeFolder')
+    contains(
+        'edrnsite.collaborations.interfaces.IGroupSpace'
+        'eke.committees.interfaces.ICommittee',
+        'eke.committees.interfaces.ICommitteeFolder',
+    )
 
 class ICommittee(IKnowledgeObject):
     '''Committee.'''

@@ -40,16 +40,14 @@
                 <p tal:condition='not:view/haveCommittees' i18n:translate='committeesFolder_noCommittees' class='discreet'>
                     There are currently no committees in this folder.
                 </p>
-                <div tal:repeat='committeeGroups view/committees'>
-                    <h3 tal:content='committeeGroups/title'>Tiger Teams</h3>
-                    <ul tal:define='committees committeeGroups/committees'>
-                        <li tal:repeat='committee committees'>
-                            <a href='#' tal:attributes='href committee/url' tal:content='committee/title'>
-                                Meow
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+                <ul tal:define='committees view/committees'>
+                    <li tal:repeat='committee committees'>
+                        <a href='#' tal:attributes='href committee/url' tal:content='committee/title'>
+                            Meow
+                        </a>
+                    </li>
+                </ul>
+
                 <div metal:use-macro='context/document_relateditems/macros/relatedItems'>
                     Any related items
                 </div>

@@ -15,4 +15,13 @@ RESERVED. U.S. Government Sponsorship acknowledged.
         handler='eke.committees.upgrades.nullUpgradeStep'
         sortkey='1'
     />
+    <genericsetup:upgradeStep
+        source='4'
+        destination='5'
+        title='Upgrade Step 4→5'
+        description='The EKE Committees upgrades by reloading its custom types when going from profile 4 to profile 5.'
+        profile='eke.committees:default'
+        handler='eke.committees.upgrades.reloadTypes4to5'
+        sortkey='1'
+    />
 </configure>

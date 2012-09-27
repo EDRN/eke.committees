@@ -3,8 +3,7 @@
 # RESERVED. U.S. Government Sponsorship acknowledged.
 
 from Acquisition import aq_base
-from eke.knowledge.testing import EKE_KNOWLEDGE_FIXTURE
-from eke.site.testing import EKE_SITE_FIXTURE
+from edrnsite.collaborations.testing import EDRNSITE_COLLABORATIONS_FIXTURE
 from plone.app.testing import PloneSandboxLayer, IntegrationTesting, FunctionalTesting
 from plone.testing import z2
 from Products.MailHost.interfaces import IMailHost
@@ -74,7 +73,7 @@ class _TestingMailHost(object):
         return 'MailHost'
 
 class EKECommittees(PloneSandboxLayer):
-    defaultBases = (EKE_SITE_FIXTURE, EKE_KNOWLEDGE_FIXTURE)
+    defaultBases = (EDRNSITE_COLLABORATIONS_FIXTURE,)
     def _createTestingMailHost(self):
         self._testingMailHost = _TestingMailHost()
     def setUpZope(self, app, configurationContext):
