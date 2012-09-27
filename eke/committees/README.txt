@@ -187,50 +187,6 @@ Now, the ordering::
     >>> browser.contents
     '...Agriculture...Armed Services...Foreign Relations...'
 
-Perfect.  Note though that all types of committees we added above were just
-that: plain committees.  There are also subcommittees, working groups, teams,
-and collaborative groups.  Each of the committees within those groupings
-should appear separately, and the groupings themselves in alphabetical order.
-
-Adding yet more committees then::
-
-    >>> browser.open(portalURL + '/senate-committees')
-    >>> browser.getLink(id='committee').click()
-    >>> browser.getControl(name='title').value = 'Disaster Recovery'
-    >>> browser.getControl(name='committeeType').value = 'Subcommittee'
-    >>> browser.getControl(name='form.button.save').click()
-    >>> browser.open(portalURL + '/senate-committees')
-    >>> browser.getLink(id='committee').click()
-    >>> browser.getControl(name='title').value = 'Tiger Research'
-    >>> browser.getControl(name='committeeType').value = 'Team'
-    >>> browser.getControl(name='form.button.save').click()
-    >>> browser.open(portalURL + '/senate-committees')
-    >>> browser.getLink(id='committee').click()
-    >>> browser.getControl(name='title').value = 'Bipartisan'
-    >>> browser.getControl(name='committeeType').value = 'Working Group'
-    >>> browser.getControl(name='form.button.save').click()
-    >>> browser.open(portalURL + '/senate-committees')
-    >>> browser.getLink(id='committee').click()
-    >>> browser.getControl(name='title').value = 'Progress Limiting'
-    >>> browser.getControl(name='committeeType').value = 'Collaborative Group'
-    >>> browser.getControl(name='form.button.save').click()
-
-And the ordering?  Take a look::
-
-    >>> browser.open(portalURL + '/senate-committees')
-    >>> browser.contents
-    '...Committees...Subcommittees...Disaster...Teams...Tiger......Working Groups...Bipartisan...'
-
-Collaborative Groups are a kind of committee according to the DMCC.  However,
-we don't want them to actually appear in the committee folder listing, because
-they're … "special".  The "Progress Limiting" committee was a collaborative
-group, but notice how it didn't appear in the listing::
-
-    >>> 'Progress Limiting' in browser.contents
-    False
-    >>> 'Collaborative Groups' in browser.contents
-    False
-
 Additionally, any nested Committees Folders should appear above the list of
 committees::
 
@@ -241,16 +197,19 @@ committees::
     >>> browser.getControl(name='form.button.save').click()
     >>> browser.open(portalURL + '/senate-committees')
     >>> browser.contents
-    '...Special Subsection...Committees...Subcommittees...Teams...Working Groups...'
+    '...Special Subsection...Agriculture...Armed Services...Foreign Relations...'
 
 
 RDF Ingestion
 -------------
 
 Committee Folders support a URL-callable method that causes them to ingest
-content via RDF, just like Knowledge Folders in the ``eke.knowledge`` package.
+RDF and create corresponding objects, just like Knowledge Folders in the
+``eke.knowledge`` package.  However, they don't create Committee objects at
+all like we've seen just above.  They used to, but not anymore!  Instead, they
+now create Group Space objects from the ``edrnsite.collaborations`` package.
 
-First, let's create a new, empty folder with which to play::
+That's right, you can now add Group Spaces to Committee Folders::
 
     >>> browser.open(portalURL)
     >>> browser.getLink(id='committee-folder').click()
@@ -259,8 +218,12 @@ First, let's create a new, empty folder with which to play::
     >>> browser.getControl(name='form.button.save').click()
     >>> browser.open(portalURL + '/house-committees/content_status_modify?workflow_action=publish')
     >>> f = portal['house-committees']
+    >>> l = browser.getLink(id='group-space')
+    >>> l.url.endswith('createObject?type_name=Group+Space')
+    True
 
-Ingesting from the RDF data source ``testscheme://localhost/committees/a``::
+Watch what happens when we ingest from the RDF data source
+``testscheme://localhost/committees/a``::
 
     >>> browser.getLink('Ingest').click()
     >>> browser.contents
@@ -272,26 +235,38 @@ Ingesting from the RDF data source ``testscheme://localhost/committees/a``::
     >>> a = f['appropriations']
     >>> a.title
     'Appropriations'
-    >>> a.abbreviatedName
-    'App'
-    >>> a.committeeType
-    'Committee'
-    >>> len(a.chair), a.chair[0].title
-    (1, 'Alottaspank, Dirk')
-    >>> len(a.coChair), a.coChair[0].title
-    (1, 'Pawaka, Makin')
-    >>> len(a.consultant), a.consultant[0].title
-    (1, 'Alottaspank, Dirk')
-    >>> len(a.member)
-    2
-    >>> memberNames = [i.title for i in a.member]
-    >>> 'Alottaspank, Dirk' in memberNames and 'Cusexijilomimi, Crystal Hotstuff' in memberNames
+    >>> a.description
+    'Abbreviated name: App. Committee type: Committee.'
+    >>> a.index_html.chair.title
+    'Alottaspank, Dirk'
+    >>> a.index_html.coChair.title
+    'Pawaka, Makin'
+    >>> 'Cusexijilomimi, Crystal Hotstuff' in [i.title for i in a.index_html.members]
     True
 
-The source ``testscheme://localhost/committees/b`` contains both the above
-committees and an additional one.  Since ingestion purges existing objects, we
-shouldn't get duplicate copies of the above committees::
+A group space is an interactive place where people can share documents and
+arrange meetings.  For example, here we'll add a file to the Appropriations
+space::
 
+    >>> from StringIO import StringIO
+    >>> fakeFile = StringIO('%PDF-1.5\nThis is sample PDF file in disguise.\nDo not try to render it; it may explode.')
+    >>> browser.open(portalURL + '/house-committees/appropriations')
+    >>> l = browser.getLink('New File')
+    >>> l.url.endswith('createObject?type_name=File')
+    True
+    >>> l.click()
+    >>> browser.getControl(name='title').value = u'Shiny New File'
+    >>> browser.getControl(name='description').value = u'A file for functional tests.'
+    >>> browser.getControl(name='file_file').add_file(fakeFile, 'application/pdf', 'test.pdf')
+    >>> browser.getControl(name='form.button.save').click()
+
+Neat.
+
+More RDF?  Sure, the source ``testscheme://localhost/committees/b`` contains
+both the above committees and an additional one.  Since ingestion purges
+existing objects, we shouldn't get duplicate copies of the above committees::
+
+    >>> browser.open(portalURL + '/house-committees')
     >>> browser.getLink('Edit').click()
     >>> browser.getControl(name='rdfDataSource').value = 'testscheme://localhost/committees/b'
     >>> browser.getControl(name='form.button.save').click()
@@ -300,6 +275,11 @@ shouldn't get duplicate copies of the above committees::
     >>> objIDs.sort()
     >>> objIDs
     ['appropriations', 'science-and-technology', 'ways-and-means']
+
+And the file in the Appropriations committee is still there too::
+
+    >>> 'shiny-new-file' in a.keys()
+    True
 
 
 RDF Data Sources
