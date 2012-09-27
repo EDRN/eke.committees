@@ -49,6 +49,10 @@ class CommitteeFolderIngestor(KnowledgeFolderIngestor):
         createdObjects, warnings = [], []
         for uri, predicates in statements.iteritems():
             if _dcTitleURI not in predicates: continue
+            committeeTypes = [unicode(i) for i in predicates.get(_committeeTypePredicateURI, [])]
+            if len(committeeTypes) > 0 and committeeTypes[0] == u'Collaborative Group':
+                # These are handled by edrnsite.collaborations directly, so don't create Group Spaces
+                continue
             title = unicode(predicates[_dcTitleURI][0])
             results = catalog(
                 Title=title,
@@ -79,23 +83,46 @@ class CommitteeFolderIngestor(KnowledgeFolderIngestor):
                 self.updateGroupSpace(gs, predicates, catalog)
                 gs.reindexObject()
                 createdObjects.append(CreatedObject(CreatedObjectWrapper(gs)))
-        self.updateCollaborativeGroups()
+        self.updateCollaborativeGroups(statements, catalog, normalize)
         self.objects = createdObjects
         self._results = Results(self.objects, warnings=warnings)
         return self.renderResults()
-    def updateCollaborativeGroups(self):
+    def updateCollaborativeGroups(self, statements, catalog, normalizer):
         '''Update members of any matching collaborative groups'''
-        catalog = getToolByName(aq_inner(self.context), 'portal_catalog')
-        for committee in [i.obj for i in self.objects if i.obj.committeeType == 'Collaborative Group']:
-            for collabGroup in [i.getObject() for i in catalog(object_provides=_collabGroup, Title=committee.title)]:
-                if len(committee.chair) > 0:
-                    collabGroup.setChair(committee.chair[0])
-                if len(committee.coChair) > 0:
-                    collabGroup.setCoChair(committee.coChair[0])
-                members = []
-                members.extend(committee.member)
-                members.extend(committee.consultant)
-                collabGroup.setMembers(members)
+        portal = getToolByName(catalog, 'portal_url').getPortalObject()
+        if 'collaborative-groups' in portal.keys():
+            collaborativeGroups = portal['collaborative-groups']
+        else:
+            collaborativeGroups = portal[portal.invokeFactory('Collaborations Folder', 'collaborative-groups')]
+            collaborativeGroups.setTitle(u'Collaborative Groups')
+            collaborativeGroups.setDescription(u'Collaborative groups are people that work together.')
+        for uri, predicates in statements.iteritems():
+            committeeTypes = [unicode(i) for i in predicates.get(_committeeTypePredicateURI, [])]
+            if len(committeeTypes) == 0 or committeeTypes[0] != u'Collaborative Group': continue
+            title = unicode(predicates[_dcTitleURI][0])
+            objID = normalizer(title)
+            if objID in collaborativeGroups.keys():
+                cb = collaborativeGroups[objID]
+                index = cb['index_html']
+            else:
+                cb = collaborativeGroups[collaborativeGroups.invokeFactory('Collaborative Group', objID)]
+                index = cb[cb.invokeFactory('Collaborative Group Index', 'index_html')]
+                cb.setTitle(title)
+                index.setTitle(title)
+            members = []
+            chairs = predicates.get(_chairPredicateURI, [])
+            if len(chairs) >= 1:
+                index.setChair(self.getPersonUID(chairs[0], catalog))
+                members.extend(chairs[1:])
+            coChairs = predicates.get(_coChairPredicateURI, [])
+            if len(coChairs) >= 1:
+                index.setCoChair(self.getPersonUID(coChairs[0], catalog))
+                members.extend(coChairs[1:])
+            members.extend(predicates.get(_consultantPredicateURI, []))
+            members.extend(predicates.get(_memberPredicateURI, []))
+            index.setMembers([self.getPersonUID(i, catalog) for i in members])
+            cb.reindexObject()
+            index.reindexObject()
     def getPersonUID(self, identifier, catalog=None):
         if not catalog:
             catalog = getToolByName(aq_inner(self.context), 'portal_catalog')
