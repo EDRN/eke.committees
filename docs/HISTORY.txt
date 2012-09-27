@@ -9,7 +9,8 @@ https://oodt.jpl.nasa.gov/jira/browse/CA.
 1.0.6 — Upgrades
 ----------------
 
-Made compatible with Plone 4.1.5.
+* Made compatible with Plone 4.1.5.
+* CA-1001 - Put Group Spaces under Committees and ingest via RDF
 
 
 1.0.5 — Test Support
