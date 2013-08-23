@@ -6,6 +6,13 @@ details about specific issue IDs listed below, consult the issue tracker at
 https://oodt.jpl.nasa.gov/jira/browse/CA.
 
 
+1.0.8 — MOAR UPGRADES!
+----------------------
+
+• Made compatible with Plone 4.3.
+• Use z3c.autoinclude
+
+
 1.0.7 — More Upgrades
 ---------------------
 
