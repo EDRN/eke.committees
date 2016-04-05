@@ -14,6 +14,7 @@ from plone.i18n.normalizer.interfaces import IIDNormalizer
 from Products.CMFCore.utils import getToolByName
 from rdflib import URIRef, ConjunctiveGraph, URLInputSource
 from zope.component import getUtility
+from urllib2 import urlopen
 
 # RDF predicates
 _abbrevNamePredicateURI    = URIRef(u'http://edrn.nci.nih.gov/xml/rdf/edrn.rdf#abbreviatedName')
@@ -38,9 +39,19 @@ class CreatedObjectWrapper(object):
 
 class CommitteeFolderIngestor(KnowledgeFolderIngestor):
     '''Committee Folder ingestion.'''
+    def getSummaryData(self,  source):
+        jsonlines = urlopen(source)
+        json = ""
+        for line in jsonlines:
+            json += line
+        return json
+
     def __call__(self, rdfDataSource=None):
         context = aq_inner(self.context)
         if rdfDataSource is None: rdfDataSource = context.rdfDataSource
+        siteSumDataSource = context.siteSumDataSource
+        context.dataSummary = self.getSummaryData(siteSumDataSource)
+
         normalize = getUtility(IIDNormalizer).normalize
         catalog = getToolByName(context, 'portal_catalog')
         graph = ConjunctiveGraph()
@@ -86,6 +97,7 @@ class CommitteeFolderIngestor(KnowledgeFolderIngestor):
         self.updateCollaborativeGroups(statements, catalog, normalize)
         self.objects = createdObjects
         self._results = Results(self.objects, warnings=warnings)
+
         return self.renderResults()
     def updateCollaborativeGroups(self, statements, catalog, normalizer):
         '''Update members of any matching collaborative groups'''
@@ -121,6 +133,7 @@ class CommitteeFolderIngestor(KnowledgeFolderIngestor):
             members.extend(predicates.get(_consultantPredicateURI, []))
             members.extend(predicates.get(_memberPredicateURI, []))
             index.setMembers([self.getPersonUID(i, catalog) for i in members])
+
             cb.reindexObject()
             index.reindexObject()
     def getPersonUID(self, identifier, catalog=None):

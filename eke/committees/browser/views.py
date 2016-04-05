@@ -13,6 +13,7 @@ from plone.memoize.instance import memoize
 from Products.CMFCore.utils import getToolByName
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from edrnsite.collaborations.interfaces import IGroupSpace
+from Products.Five.browser import BrowserView
 
 class CommitteeFolderView(KnowledgeFolderView):
     '''Default view of a Committee Folder.'''
@@ -45,3 +46,9 @@ class CommitteeFolderView(KnowledgeFolderView):
 class CommitteeView(KnowledgeObjectView):
     '''Default view of a Committee.'''
     __call__ = ViewPageTemplateFile('templates/committee.pt')
+
+class CommitteeFolderSummary(BrowserView):
+    def __call__(self):
+        self.request.RESPONSE.setHeader('Content-type', 'application/json')
+        context = aq_inner(self.context)
+        return context.dataSummary

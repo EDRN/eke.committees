@@ -45,5 +45,10 @@ RESERVED. U.S. Government Sponsorship acknowledged.
         menu='plone_displayviews'
         title='Committee view'
     />
-    
+    <browser:page
+        class='.views.CommitteeFolderSummary'
+        for='..interfaces.ICommitteeFolder'
+        name='summary'
+        permission='zope2.View'
+    />
 </configure>

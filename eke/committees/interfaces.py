@@ -18,6 +18,11 @@ class ICommitteeFolder(IKnowledgeFolder):
         'eke.committees.interfaces.ICommittee',
         'eke.committees.interfaces.ICommitteeFolder',
     )
+    dataSummary = schema.TextLine(
+        title=_(u'Committee Statistics'),
+        description=_(u'Committee statistics.'),
+        required=False
+    )
 
 class ICommittee(IKnowledgeObject):
     '''Committee.'''
