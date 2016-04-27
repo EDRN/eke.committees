@@ -58,6 +58,8 @@ _threeCommitteesRDF = '''<?xml version='1.0' encoding='UTF-8'?>
   </rdf:Description>
 </rdf:RDF>'''
 
+_summaryCommitteesJSON = '''{"member":{"G.I. and Other Associated Cancers Research Group":27,"Lung and Upper Aerodigestive Cancers Research Group":20,"Prostate and Urologic Cancers Research Group":18,"Breast and Gynecologic Cancers Research Group":27},"protocol":{"G.I. and Other Associated Cancers Research Group":62,"Lung and Upper Aerodigestive Cancers Research Group":25,"Prostate and Urologic Cancers Research Group":56},"data":{"G.I. and Other Associated Cancers Research Group":2,"Lung and Upper Aerodigestive Cancers Research Group":35,"Prostate and Urologic Cancers Research Group":23,"Breast and Gynecologic Cancers Research Group":5},"biomarker":{"Lung and Upper Aerodigestive Cancers Research Group":33,"Prostate and Urologic Cancers Research Group":5,"Breast and Gynecologic Cancers Research Group":181},"panel":{"Lung and Upper Aerodigestive Cancers Research Group":12,"Breast and Gynecologic Cancers Research Group":2}}'''
+
 class _TestingMailHost(object):
     smtp_queue = True
     _sentMessages = []
@@ -83,6 +85,7 @@ class EKECommittees(PloneSandboxLayer):
         ekeSiteBase.registerLocalTestData()
         ekeKnowledgeBase.registerTestData('/committees/a', _twoCommitteesRDF)
         ekeKnowledgeBase.registerTestData('/committees/b', _threeCommitteesRDF)
+        ekeKnowledgeBase.registerTestData('/summary/a', _summaryCommitteesJSON)
         self._createTestingMailHost()
         import plone.stringinterp
         self.loadZCML(package=plone.stringinterp)

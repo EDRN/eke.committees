@@ -215,6 +215,7 @@ That's right, you can now add Group Spaces to Committee Folders::
     >>> browser.getLink(id='committee-folder').click()
     >>> browser.getControl(name='title').value = 'House Committees'
     >>> browser.getControl(name='rdfDataSource').value = u'testscheme://localhost/committees/a'
+    >>> browser.getControl(name='siteSumDataSource').value = u'testscheme://localhost/summary/a'
     >>> browser.getControl(name='form.button.save').click()
     >>> browser.open(portalURL + '/house-committees/content_status_modify?workflow_action=publish')
     >>> f = portal['house-committees']

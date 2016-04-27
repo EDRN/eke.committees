@@ -10,6 +10,7 @@ https://oodt.jpl.nasa.gov/jira/browse/CA.
 ------------
 
 • Added summarizers
+• CA-1338: Fix tests for eke.committees
 
 
 1.0.9 — I Had Some Chicken; Pass Me the FLOSS
