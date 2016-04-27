@@ -6,8 +6,8 @@ details about specific issue IDs listed below, consult the issue tracker at
 https://oodt.jpl.nasa.gov/jira/browse/CA.
 
 
-1.0.10 — TBD
-------------
+1.0.10 — Visuals
+----------------
 
 • Added summarizers
 • CA-1338: Fix tests for eke.committees
