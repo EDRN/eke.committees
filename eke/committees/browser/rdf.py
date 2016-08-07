@@ -40,12 +40,14 @@ class CreatedObjectWrapper(object):
 class CommitteeFolderIngestor(KnowledgeFolderIngestor):
     '''Committee Folder ingestion.'''
     def getSummaryData(self,  source):
-        jsonlines = urlopen(source)
-        json = ""
-        for line in jsonlines:
-            json += line
-        return json
-
+        try:
+            jsonlines = urlopen(source)
+            json = ""
+            for line in jsonlines:
+                json += line
+            return json
+        except:
+            _logger.warning('HTTP Error when trying to access committee summary data source. Skipping summarization...')
     def __call__(self, rdfDataSource=None):
         context = aq_inner(self.context)
         if not context.rdfDataSource:
