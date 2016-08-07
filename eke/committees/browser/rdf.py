@@ -48,9 +48,13 @@ class CommitteeFolderIngestor(KnowledgeFolderIngestor):
 
     def __call__(self, rdfDataSource=None):
         context = aq_inner(self.context)
+        if not context.rdfDataSource:
+            raise RDFIngestException(_(u'This committee folder lacks one of its RDF source URLs.'))
         if rdfDataSource is None: rdfDataSource = context.rdfDataSource
+
         siteSumDataSource = context.siteSumDataSource
-        context.dataSummary = self.getSummaryData(siteSumDataSource)
+        if siteSumDataSource:
+            context.dataSummary = self.getSummaryData(siteSumDataSource)
 
         normalize = getUtility(IIDNormalizer).normalize
         catalog = getToolByName(context, 'portal_catalog')
