@@ -6,6 +6,12 @@ details about specific issue IDs listed below, consult the issue tracker at
 https://oodt.jpl.nasa.gov/jira/browse/CA.
 
 
+1.0.11 — Protection
+-------------------
+
+• CA-1349: Summary ingest should be robust in the face of failures
+
+
 1.0.10 — Visuals
 ----------------
 
