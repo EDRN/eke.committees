@@ -9,12 +9,16 @@ EKE Committees: RDF ingest for Committee Folders and their Committees.
 from Acquisition import aq_inner
 from edrnsite.collaborations.interfaces import IGroupSpace
 from eke.knowledge import dublincore
-from eke.knowledge.browser.rdf import KnowledgeFolderIngestor, CreatedObject, Results
+from eke.knowledge.browser.rdf import KnowledgeFolderIngestor, CreatedObject, Results, RDFIngestException
 from plone.i18n.normalizer.interfaces import IIDNormalizer
 from Products.CMFCore.utils import getToolByName
 from rdflib import URIRef, ConjunctiveGraph, URLInputSource
 from zope.component import getUtility
 from urllib2 import urlopen
+import logging
+
+# Logging
+_logger = logging.getLogger(__name__)
 
 # RDF predicates
 _abbrevNamePredicateURI    = URIRef(u'http://edrn.nci.nih.gov/xml/rdf/edrn.rdf#abbreviatedName')
@@ -27,6 +31,7 @@ _memberPredicateURI        = URIRef(u'http://edrn.nci.nih.gov/xml/rdf/edrn.rdf#m
 
 # Collaborative group's interface
 _collabGroup = 'edrnsite.collaborations.interfaces.collaborativegroupindex.ICollaborativeGroupIndex'
+
 
 class CreatedObjectWrapper(object):
     def __init__(self, obj):
@@ -46,12 +51,12 @@ class CommitteeFolderIngestor(KnowledgeFolderIngestor):
             for line in jsonlines:
                 json += line
             return json
-        except:
+        except IOError:
             _logger.warning('HTTP Error when trying to access committee summary data source. Skipping summarization...')
     def __call__(self, rdfDataSource=None):
         context = aq_inner(self.context)
         if not context.rdfDataSource:
-            raise RDFIngestException(_(u'This committee folder lacks one of its RDF source URLs.'))
+            raise RDFIngestException(u'This committee folder lacks one of its RDF source URLs.')
         if rdfDataSource is None: rdfDataSource = context.rdfDataSource
 
         siteSumDataSource = context.siteSumDataSource
