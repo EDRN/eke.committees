@@ -15,7 +15,7 @@ from eke.committees import ProjectMessageFactory as _
 CommitteeFolderSchema = knowledgefolder.KnowledgeFolderSchema.copy() + atapi.Schema((
     atapi.StringField(
         'siteSumDataSource',
-        required=False,
+        required=True,
         storage=atapi.AnnotationStorage(),
         widget=atapi.StringWidget(
             label=_(u'Committee Summary Statistics Data Source'),
