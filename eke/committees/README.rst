@@ -60,6 +60,7 @@ portal::
     >>> browser.getControl(name='title').value = u'Senate Committees'
     >>> browser.getControl(name='description').value = u'This folder is just for functional tests.'
     >>> browser.getControl(name='rdfDataSource').value = u'testscheme://localhost/committees/a'
+    >>> browser.getControl(name='siteSumDataSource').value = u'testscheme://localhost/summary/a'
     >>> browser.getControl(name='form.button.save').click()
     >>> 'senate-committees' in portal.objectIds()
     True
@@ -194,6 +195,7 @@ committees::
     True
     >>> browser.getLink(id='committee-folder').click()
     >>> browser.getControl(name='title').value = 'Special Subsection on Independent Committees'
+    >>> browser.getControl(name='siteSumDataSource').value = u'testscheme://localhost/summary/a'
     >>> browser.getControl(name='form.button.save').click()
     >>> browser.open(portalURL + '/senate-committees')
     >>> browser.contents
