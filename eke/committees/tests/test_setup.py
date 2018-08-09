@@ -7,7 +7,7 @@
 
 from eke.committees.testing import EKE_COMMITTEES_INTEGRATION_TESTING
 from Products.CMFCore.utils import getToolByName
-import unittest2 as unittest
+import unittest
 
 class SetupTest(unittest.TestCase):
     '''Unit tests the setup of this package.'''

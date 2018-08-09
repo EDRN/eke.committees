@@ -8,7 +8,7 @@
 from eke.committees.testing import EKE_COMMITTEES_FUNCTIONAL_TESTING as LAYER
 from plone.testing import layered
 import doctest
-import unittest2 as unittest
+import unittest
 
 optionFlags = (doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE | doctest.REPORT_ONLY_FIRST_FAILURE)
 

@@ -5,6 +5,13 @@ What follows is a history of changes from release to release.  For more
 details about specific issue IDs listed below, consult the issue tracker at
 https://oodt.jpl.nasa.gov/jira/browse/CA.
 
+
+1.0.13 — Plone 4.3.9 Upgrade
+----------------------------
+
+• CA-1592
+
+
 1.0.12 - I Require More URLs!
 -----------------------------
 
