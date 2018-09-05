@@ -10,7 +10,7 @@ import os.path
 # ------------
 
 _name        = 'eke.committees'
-_version     = '1.0.13'
+_version     = '1.0.14'
 _description = 'EDRN Committee list and membership information for the EDRN Knowledge Environment'
 _author      = 'Sean Kelly'
 _authorEmail = 'sean.kelly@jpl.nasa.gov'
